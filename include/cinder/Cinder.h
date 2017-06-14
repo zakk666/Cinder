@@ -28,6 +28,7 @@
 	#endif
 #endif
 
+#define GLM_FORCE_SIZE_FUNC
 #include "glm/fwd.hpp"
 
 #include <cstdint>
@@ -35,12 +36,10 @@
 //  CINDER_VERSION % 100 is the patch level
 //  CINDER_VERSION / 100 % 1000 is the minor version
 //  CINDER_VERSION / 100000 is the major version
-#define CINDER_VERSION		902
-#define CINDER_VERSION_STR	"0.9.2dev"
+#define CINDER_VERSION		900
+#define CINDER_VERSION_STR	"0.9.0"
 
-#if ! defined( ASIO_STANDALONE )
 #define ASIO_STANDALONE 1
-#endif
 
 namespace cinder {
 using std::int8_t;
@@ -54,27 +53,23 @@ using std::uint64_t;
 
 #define CINDER_CINDER
 
-#if defined( _WIN32 ) || defined( __WIN32__ ) || defined( WIN32 )
-	#define CINDER_MSW
-	#if defined( WINAPI_PARTITION_DESKTOP )
-		#if WINAPI_FAMILY_PARTITION( WINAPI_PARTITION_DESKTOP )
-			#define CINDER_MSW_DESKTOP
+#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+	#if defined(WINAPI_PARTITION_DESKTOP)
+		#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+			#define CINDER_MSW
 		#else
-			#define CINDER_UWP
+			#define CINDER_WINRT
 			#define ASIO_WINDOWS_RUNTIME 1
 		#endif
 	#else
-		#define CINDER_MSW_DESKTOP
-		#include <sdkddkver.h>
+		#define CINDER_MSW
 	#endif
-#elif (defined( linux ) || defined( __linux ) || defined( __linux__ )) && ! defined( __ANDROID__ )
-	#define CINDER_POSIX
+#elif defined(linux) || defined(__linux) || defined(__linux__)
 	#define CINDER_LINUX
-#elif defined( macintosh ) || defined( __APPLE__ ) || defined( __APPLE_CC__ )
-	#define CINDER_POSIX
+#elif defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__)
 	#define CINDER_COCOA
-	#include <TargetConditionals.h>
-	#include <AvailabilityMacros.h>
+//	#include <TargetConditionals.h>
+//	#include <DawAvailabilityMacros.h>
 	#if TARGET_OS_IPHONE
 		#define CINDER_COCOA_TOUCH
 		#if TARGET_IPHONE_SIMULATOR
@@ -87,10 +82,6 @@ using std::uint64_t;
 	#endif
 	// This is defined to prevent the inclusion of some unfortunate macros in <AssertMacros.h>
 	#define __ASSERTMACROS__
-#elif defined( __ANDROID__ ) && (defined( linux ) || defined( __linux ) || defined( __linux__ ))
-    #define CINDER_POSIX
-	#define CINDER_ANDROID
-	#include <android/api-level.h>
 #else
 	#error "cinder compile error: Unknown platform"
 #endif
@@ -99,13 +90,16 @@ using std::uint64_t;
 
 } // namespace cinder
 
+#if defined(CINDER_COCOA)
+#include <TargetConditionals.h>
+#include <AvailabilityMacros.h>
+#endif
+
 #if defined( CINDER_COCOA ) && ! defined( _LIBCPP_VERSION ) // libstdc++
 	#error "Cinder requires libc++ on Mac OS X and iOS"
 #endif
 
 #include <memory>
-#include "cinder/CinderFwd.h"
-#include "cinder/Export.h"
 
 // Create a namepace alias as shorthand for cinder::
 #if ! defined( CINDER_NO_NS_ALIAS )
