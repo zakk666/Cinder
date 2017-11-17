@@ -545,7 +545,7 @@ void AppCocoaView::launch()
 		[win->mCinderView makeCurrentContext];
 		[mImpl setActiveWindow:win];
 		win->mWindowRef->emitResize();
-	}	
+	}
 	
 	[mImpl startAnimationTimer];
 }
